@@ -67,10 +67,14 @@ case $1 in
 		mv $f /tmp/bin
 		echo $f >> $bindb
 	;;
+	list )
+		echo "Coming soon"
+	;;
 
-	aliasify )
-		brc="/etc/bash.bashrc"
-		for i in "cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp"
+
+	aliasify ) 
+		aliases=("cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp" "test:list")
+		for i in ${aliases[@]}
 		do
 			alias $(echo $i | cut -d ":" -f 1)="source $2 $(echo $i | cut -d ":" -f 2)"
 		done
