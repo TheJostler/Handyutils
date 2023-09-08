@@ -1,0 +1,97 @@
+#!/bin/bash
+## this bash script is used to automate some mundane cli processes
+this="$(pwd)/$(basename $0)"
+case $1 in
+	# Use fuzzy find to choose directory and cd into it
+	cdfzf )
+		if [ "$2" == "" ]
+		then
+			p="."
+		else
+			p="$2"
+		fi
+		cd "$(find $p -type d | fzf)"
+	;;
+
+	# Make a directory and cd into it
+	mkdircd )
+		if [ "$2" == "" ]
+		then
+			read -p "Please specify the new file path -- " p
+		else
+			p="$2"
+		fi
+		# Recursively create new folders if they don't exist
+		for folder in ${p//// }
+		do
+			mkdir $folder
+			cd $folder
+		done	
+	;;
+	
+	pathaddpwd )
+
+	;;
+
+	# Move files to the tmp directory instead of using rm...
+	# The bin can be emptied with the --empty switch
+	# A file can also be restored with the --restore switch
+	mvtmp )
+		bin="/tmp/bin"
+		bindb="$bin/.db.bin.helpfulutils"
+		if [ "$2" == "" ]
+		then
+			read -p "Nothing specified, please specify what you want to delete -- " f
+		else
+			f="$2"
+		fi
+		if [ ! -d "/tmp/bin" ]
+		then
+			mkdir /tmp/bin
+		fi
+		if [ "$2" == "--empty" ]
+		then
+			rm -r $bin/*
+			return 0
+		elif [ "$2" == "--restore" ]
+		then
+			line=$(cat $bindb | cat -n | fzf --with-nth 2..)
+			restorepath=$(echo $line | cut -d " " -f 2)
+			lineno=$(echo $line | cut -d " " -f 1)d
+			name=$(echo $restorepath | rev | cut -d "/" -f 1 | rev)
+			mv $bin/$name $restorepath && echo "Restored $restorepath"
+			sed -i $lineno $bindb
+			return 0
+		fi
+		f="$(pwd)/$f"
+		mv $f /tmp/bin
+		echo $f >> $bindb
+	;;
+
+	aliasify )
+		brc="/etc/bash.bashrc"
+		for i in "cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp"
+		do
+			alias $(echo $i | cut -d ":" -f 1)="source $this $(echo $i | cut -d ":" -f 2)"
+		done
+	;;
+
+	install )
+		brc="/etc/bash.bashrc"
+		if [ ! -f $brc ]
+		then
+			echo "Couldn't find the bashrc file at: $brc"
+			read -p "Please provide a path for the bashrc file -- " brc
+		fi
+		echo "source $this aliasify" >> $brc 
+	;;
+
+	--help | -h )
+		echo "Here is some help for you!"
+	;;
+
+	* )
+		echo "Invalid command"
+		exit 1
+	;;
+esac
