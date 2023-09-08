@@ -72,7 +72,7 @@ case $1 in
 		brc="/etc/bash.bashrc"
 		for i in "cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp"
 		do
-			alias $(echo $i | cut -d ":" -f 1)="source $this $(echo $i | cut -d ":" -f 2)"
+			alias $(echo $i | cut -d ":" -f 1)="source $2 $(echo $i | cut -d ":" -f 2)"
 		done
 	;;
 
@@ -83,7 +83,7 @@ case $1 in
 			echo "Couldn't find the bashrc file at: $brc"
 			read -p "Please provide a path for the bashrc file -- " brc
 		fi
-		echo "source $this aliasify" >> $brc 
+		echo "source $this aliasify $this" >> $brc 
 	;;
 
 	--help | -h )
