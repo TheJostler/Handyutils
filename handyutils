@@ -30,7 +30,7 @@ case $1 in
 	;;
 	
 	pathaddpwd )
-
+		echo "Coming Soon"
 	;;
 
 	# Move files to the tmp directory instead of using rm...
