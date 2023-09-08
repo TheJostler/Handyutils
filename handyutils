@@ -1,6 +1,6 @@
 #!/bin/bash
 ## this bash script is used to automate some mundane cli processes
-this="$(pwd)/$(basename $0)"
+this="$(pwd)/$(basename $0 2> /dev/null)"
 case $1 in
 	# Use fuzzy find to choose directory and cd into it
 	cdfzf )
