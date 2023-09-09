@@ -10,7 +10,7 @@ case $1 in
 		else
 			p="$2"
 		fi
-		cd "$(find $p -type d | fzf)"
+		cd -L "$(find $p -type d,l | fzf)"
 	;;
 
 	# Make a directory and cd into it
