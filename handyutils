@@ -67,13 +67,18 @@ case $1 in
 		mv $f /tmp/bin
 		echo $f >> $bindb
 	;;
-	list )
-		echo "Coming soon"
+	vimfzf )
+		if [ "$2" == "" ]
+		then
+			p="."
+		else
+			p="$2"
+		fi
+		vim $(find $p -type f 2>& > /dev/null | fzf)
 	;;
 
-
 	aliasify ) 
-		aliases=("cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp")
+		aliases=("cdf:cdfzf" "newdir:mkdircd" "bin:mvtmp" "vimf:vimfzf")
 		for i in ${aliases[@]}
 		do
 			alias $(echo $i | cut -d ":" -f 1)="source $2 $(echo $i | cut -d ":" -f 2)"
